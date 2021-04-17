@@ -102,7 +102,7 @@ class Game(private val gameState: GameState) {
 
     private fun duel() {
         if (gameState.wasDuelPerformedThisDay) {
-            debug("Dzisiaj już był pojedynek!")
+            println("Dzisiaj już był pojedynek!")
             return
         }
         //kto wyzywa kogo xD
@@ -117,12 +117,12 @@ class Game(private val gameState: GameState) {
         val agreement = if (judge is Sedzia && judge.isAlive()) {
             judge.agreeOnDuelOrNot(challengingPlayer, challengedPlayer)
         } else {
-            println("[Sedzia nie zyje, domyslna zgoda]")
+            debug("Sędzia nie żyje, więc pojedynek się odbędzie.")
             true
         }
 
         if (agreement) {
-            println("Jest zgoda na pojedynek, czas na walkę! [Rozmawiajcie!]")
+            messageToSay("Jest zgoda na pojedynek, czas na walkę! [Rozmawiajcie!]")
             println("Teraz czas na głosowanie:")
             println("Kto jest za zabiciem ${challengingPlayer.playerName}?")
             val challengingVoters = gameState.pickAnyPlayers()
@@ -156,18 +156,16 @@ class Game(private val gameState: GameState) {
                     killInDuel(challengedPlayer, challengedVoters)
                 }
             }
-            // TODO: 17/04/2021 przerywanie pojedynków przez innych typów  xd
-            // TODO: 17/04/2021  czy jak pojedynek zostanie przerwany przez kolejarza, to może być jeszcze jeden pojedynek danego dnia?
 
             gameState.wasDuelPerformedThisDay = true
             println("Pojedynek odbyty!")
         } else {
-            println("Nie ma zgody na pojedynek")
+            messageToSay("Nie ma zgody na pojedynek")
         }
     }
 
     private fun killInDuel(player: Player, voters: List<Player>) {
-        println("W pojedynku ginie ${player.playerName}")
+        messageToSay("W pojedynku ginie ${player.playerName}")
         player.character.killOnVotingTime(gameState, voters)
     }
 
